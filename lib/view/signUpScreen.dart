@@ -3,16 +3,29 @@ import 'package:chat_app/view/logInScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
   //const SignUpScreen({super.key});
-
   String? email;
+
   String? password;
+
   GlobalKey<FormState> formKey = GlobalKey();
+
+  bool isLoading=false; 
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ModalProgressHUD(
+      inAsyncCall: isLoading,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -40,7 +53,7 @@ class SignUpScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
-                // Username TextField
+                //Username TextField
                 TextField(
                   decoration: InputDecoration(
                     hintText: "Username",
@@ -115,6 +128,10 @@ class SignUpScreen extends StatelessWidget {
                     ),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
+                        
+                        setState(() {
+                          isLoading=true;
+                        });
                         try {
                           var auth = FirebaseAuth.instance;
                           UserCredential user =
@@ -159,6 +176,10 @@ class SignUpScreen extends StatelessWidget {
                                     'An error occurred. Please try again.')),
                           );
                         }
+                        
+                        setState(() {
+                          isLoading=false;
+                        });
                       }
                     },
                     child: Text(
@@ -203,6 +224,6 @@ class SignUpScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }
