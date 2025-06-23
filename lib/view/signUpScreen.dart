@@ -1,4 +1,5 @@
 import 'package:chat_app/constants.dart';
+import 'package:chat_app/view/chat_screen.dart';
 import 'package:chat_app/view/logInScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -139,11 +140,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             email: email!,
                             password: password!,
                           );
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Registration successful')),
-                          );
+                            Navigator.push(context,MaterialPageRoute(builder: 
+                            (context)=>ChatScreen()));
+                          // ScaffoldMessenger.of(context).showSnackBar(
+                          //   const SnackBar(
+                          //       content: Text('Registration successful')),
+                          // );
                         } on FirebaseAuthException catch (e) {
                           String errorMessage;
                           switch (e.code) {
