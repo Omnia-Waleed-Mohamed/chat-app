@@ -1,13 +1,26 @@
 import 'package:chat_app/constants.dart';
+import 'package:chat_app/models/message.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+   ChatScreen({super.key});
  
- 
+ FirebaseFirestore firestore = FirebaseFirestore.instance;
+ CollectionReference messages = FirebaseFirestore.instance.collection('messages');
+ TextEditingController controller =TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return StreamBuilder<QuerySnapshot>(
+      stream: messages.orderBy(kCreatAt).snapshots(),
+      
+      builder: (context,snapshot)
+    {
+      if (snapshot.hasData){
+        List<Message> messagesList =[];
+        for(int i=0;i<snapshot.data!.docs.length ;i++){
+              messagesList.add(Message.fromJson(snapshot.data!.docs[i]));
+        }
+      return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: kPrimaryColor,
@@ -46,9 +59,9 @@ class ChatScreen extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: 10,
+              itemCount: messagesList.length,
               itemBuilder: (context, index) {
-                bool isMe = index % 2 == 0; // نغير الشكل حسب المرسل
+                bool isMe = index % 2 == 0; 
                 return Align(
                   alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
@@ -64,7 +77,8 @@ class ChatScreen extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      isMe ? "Hello from me!" : "Hi from the other side!",
+                      //isMe ? "Hello from me!" : "Hi from the other side!",
+                      messagesList[index].messages,
                       style: TextStyle(
                         color: isMe ? Colors.white : Colors.black87,
                         fontSize: 16,
@@ -81,6 +95,15 @@ class ChatScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
+
+                    onSubmitted: (data){
+                        messages.add({
+                          kMessage:data,
+                          kCreatAt :DateTime.now()
+                        }
+                        );
+                        controller.clear();
+                    },
                     decoration: InputDecoration(
                       hintText: 'Type a message...',
                       filled: true,
@@ -112,5 +135,13 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
     );
+      }else{
+        return Text("Loading....");
+      }
+    }
+    
+    )
+  
+    ;
   }
 }
