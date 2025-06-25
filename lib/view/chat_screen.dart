@@ -153,15 +153,14 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
     );
-      }else{
-        return Text("Loading....");
-      }
-    }
-    
-    )
-  
-    ;
+      } else {
+          
+          return const Center(
+            child: CircularProgressIndicator(color: kPrimaryColor),
+          );
+        }
+      },
+    );
   }
 }
-
 

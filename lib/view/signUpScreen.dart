@@ -26,6 +26,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
+        
         resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(

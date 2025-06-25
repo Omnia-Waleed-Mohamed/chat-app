@@ -36,15 +36,15 @@ class _LogInScreenState extends State<LogInScreen> {
               children: [
                 const SizedBox(height: 40),
                 Text(
-                  "Login",
+                  "Hello, Welcome Back",
                   style: GoogleFonts.poppins(
-                    fontSize: 32,
+                    fontSize: 24,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "Welcome back to the app",
+                  "Happy to see you again, to use your account please login first.",
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     color: Colors.grey,
