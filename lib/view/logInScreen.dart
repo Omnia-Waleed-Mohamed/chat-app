@@ -25,6 +25,7 @@ class _LogInScreenState extends State<LogInScreen> {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
           child: Form(

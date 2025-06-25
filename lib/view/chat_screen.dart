@@ -1,17 +1,38 @@
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/models/message.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class ChatScreen extends StatelessWidget {
    ChatScreen({super.key});
  
+ final _controller =ScrollController();
  FirebaseFirestore firestore = FirebaseFirestore.instance;
  CollectionReference messages = FirebaseFirestore.instance.collection('messages');
  TextEditingController controller =TextEditingController();
+
+ void sendMessage() {
+  final text = controller.text.trim();
+  if (text.isNotEmpty) {
+    messages.add({
+      kMessage: text,
+      kCreatAt: DateTime.now(),
+      'senderId': FirebaseAuth.instance.currentUser!.uid,
+    });
+
+    controller.clear();
+    _controller.animateTo(
+      0,
+      duration: const Duration(seconds: 1),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: messages.orderBy(kCreatAt).snapshots(),
+      stream: messages.orderBy(kCreatAt,descending: true).snapshots(),
       
       builder: (context,snapshot)
     {
@@ -26,14 +47,14 @@ class ChatScreen extends StatelessWidget {
         backgroundColor: kPrimaryColor,
         title: Row(
           children: [
-            // الصورة بشكل دائري
+            
             CircleAvatar(
               radius: 16,
               backgroundImage: AssetImage("assets/images/person.png"),
             ),
             const SizedBox(width: 8),
             const Text(
-              "Rawan",
+              "Chat",
               style: TextStyle(color: Colors.white,fontSize: 18),
             ),
           ],
@@ -58,10 +79,14 @@ class ChatScreen extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.builder(
+              reverse: true,
+              controller: _controller,
               padding: const EdgeInsets.all(16),
               itemCount: messagesList.length,
               itemBuilder: (context, index) {
-                bool isMe = index % 2 == 0; 
+               // bool isMe = index % 2 == 0; 
+               bool isMe = messagesList[index].senderId == FirebaseAuth.instance.currentUser!.uid;
+
                 return Align(
                   alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
@@ -95,15 +120,9 @@ class ChatScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
-
-                    onSubmitted: (data){
-                        messages.add({
-                          kMessage:data,
-                          kCreatAt :DateTime.now()
-                        }
-                        );
-                        controller.clear();
-                    },
+                    
+                      controller: controller,
+                    onSubmitted: (data) => sendMessage(),
                     decoration: InputDecoration(
                       hintText: 'Type a message...',
                       filled: true,
@@ -123,9 +142,8 @@ class ChatScreen extends StatelessWidget {
                   backgroundColor: kPrimaryColor,
                   child: IconButton(
                     icon: const Icon(Icons.send, color: Colors.white),
-                    onPressed: () {
-                      // action to send message
-                    },
+                    onPressed: () => sendMessage(), 
+                    
                   ),
                 ),
               ],
@@ -145,3 +163,5 @@ class ChatScreen extends StatelessWidget {
     ;
   }
 }
+
+
