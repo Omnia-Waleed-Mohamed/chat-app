@@ -19,7 +19,7 @@ class _LogInScreenState extends State<LogInScreen> {
   String? password;
   bool isLoading = false;
   GlobalKey<FormState> formKey = GlobalKey();
-
+bool isPasswordVisible = false;
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -69,13 +69,14 @@ class _LogInScreenState extends State<LogInScreen> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),
+                        suffixIcon: Icon(Icons.email_outlined, color: Colors.grey)
                   ),
                 ),
                 const SizedBox(height: 16),
 
                 // Password TextField
                 TextFormField(
-                  obscureText: true,
+                  obscureText: !isPasswordVisible,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password is required';
@@ -91,6 +92,18 @@ class _LogInScreenState extends State<LogInScreen> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),
+
+                        suffixIcon: IconButton(
+      icon: Icon(
+        isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+        color: Colors.grey,
+      ),
+      onPressed: () {
+        setState(() {
+          isPasswordVisible = !isPasswordVisible;
+        });
+      },
+    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -117,12 +130,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           );
 Navigator.push(context,MaterialPageRoute(builder: 
                             (context)=>ChatScreen()));
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //   const SnackBar(
-                          //       content: Text('Login successful')),
-                          // );
-
-                          // Navigate to home screen here if needed
+                          
                         } on FirebaseAuthException catch (e) {
                           String message;
                           switch (e.code) {

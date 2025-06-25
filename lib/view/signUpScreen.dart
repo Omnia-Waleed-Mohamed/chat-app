@@ -20,7 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   GlobalKey<FormState> formKey = GlobalKey();
 
   bool isLoading=false; 
-
+bool isPasswordVisible = false;
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -66,6 +66,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),
+                        suffixIcon: Icon(Icons.person, color: Colors.grey)
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -89,32 +90,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),
+                        suffixIcon: Icon(Icons.email_outlined, color: Colors.grey)
                   ),
                 ),
                 const SizedBox(height: 16),
 
                 // Password TextField
                 TextFormField(
-                  validator: (data) {
-                    if (data!.isEmpty) {
-                      return 'field is reqired';
-                    }
-                  },
-                  onChanged: (data) {
-                    password = data;
-                  },
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: "Password",
-                    hintStyle: GoogleFonts.poppins(),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Colors.grey),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                  ),
-                ),
+  validator: (data) {
+    if (data == null || data.isEmpty) {
+      return 'Field is required';
+    }
+    return null; // ✅ لازم ترجعي null لو مفيش مشكلة
+  },
+  onChanged: (data) {
+    password = data;
+  },
+  obscureText: !isPasswordVisible,
+  decoration: InputDecoration(
+    hintText: "Password",
+    hintStyle: GoogleFonts.poppins(),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.grey),
+    ),
+    contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16, vertical: 14),
+    suffixIcon: IconButton(
+      icon: Icon(
+        isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+        color: Colors.grey,
+      ),
+      onPressed: () {
+        setState(() {
+          isPasswordVisible = !isPasswordVisible;
+        });
+      },
+    ),
+  ),
+),
                 const SizedBox(height: 24),
 
                 // Sign Up Button

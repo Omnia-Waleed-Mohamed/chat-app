@@ -47,7 +47,7 @@ class SplashScreen extends StatelessWidget {
               Center(
                 child: Image.asset(
                   "assets/images/Dayflow Best Friends.png",
-                  height: 350,
+                  height: 320,
                   width: 350,
                 ),
               ),
